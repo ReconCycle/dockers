@@ -1,0 +1,56 @@
+version: '3'
+
+networks:
+  ros:
+    driver: bridge
+
+services:
+
+  # roscore
+  rosmaster:
+    image: ros:kinetic
+    command: stdbuf -o L roscore
+    networks:
+      - ros
+    environment:
+      - "ROS_HOSTNAME=rosmaster"
+      
+  # novnc @ localhost:8080
+  novnc:
+    image: theasp/novnc:latest
+    environment:
+      # Adjust to your screen size
+      - DISPLAY_WIDTH=1600
+      - DISPLAY_HEIGHT=968
+      - RUN_XTERM=yes
+    ports:
+      - "8080:8080"
+    networks:
+      - ros
+  
+  # rviz
+  rviz:
+    image: ghcr.io/reconcycle/reconcycle-simulation:kinetic
+    depends_on:
+      - rosmaster
+    command: stdbuf -o L roslaunch --wait reconcycle_description display_sim.launch
+    environment:
+      - "DISPLAY=novnc:0.0"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+      - "ROS_HOSTNAME=rviz"
+    networks:
+      - ros
+    restart: always
+    
+  simulation:
+    image: ghcr.io/reconcycle/reconcycle-simulation:kinetic
+    depends_on:
+      - rosmaster
+    command: stdbuf -o L roslaunch --wait reconcycle_simulation simulation.launch controller:='reconcycle_joint_controller' dual_setup:=true gui:=false
+    environment:
+      - "DISPLAY=novnc:0.0"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+      - "ROS_HOSTNAME=simulation"
+    networks:
+      - ros
+    restart: always
