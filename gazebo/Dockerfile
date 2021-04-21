@@ -1,8 +1,7 @@
-#based on https://github.com/ReconCycle/docker_examples/tree/master/ros1_gazebo
-FROM ijs:kinetic-devel
+FROM ghcr.io/reconcycle/ros-devel:kinetic
 
 # Download packages that are needed for compiling the qb stuff
-RUN apt update && apt install -y \
+RUN apt-get update && apt install -y \
     ros-kinetic-gazebo-ros-pkgs \
     ros-kinetic-gazebo-ros-control
 
@@ -17,3 +16,6 @@ RUN wget -r -nH -np -R "index.html*" http://models.gazebosim.org/ground_plane/
 WORKDIR /ros_ws
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
+
+
+LABEL org.opencontainers.image.source=https://github.com/ReconCycle/dockers

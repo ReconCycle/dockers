@@ -53,3 +53,5 @@ EXPOSE 7681
 # run only gzweb
 ENTRYPOINT []
 CMD npm start --prefix ~/gzweb
+
+LABEL org.opencontainers.image.source=https://github.com/ReconCycle/dockers

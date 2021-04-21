@@ -8,18 +8,23 @@ ENV HOME=/root \
 
 # Install cli tools
 RUN set -ex; \
-    apt update && apt install -y \
+    apt-get update && apt-get install -y \
     screen \
     vim \
     nano \
     net-tools \
     iputils-ping \
     git \
+    gcc-4.9 \
+    libstdc++6 \
     wget
+    
+
 
 # Install pip for Python2
-RUN wget https://bootstrap.pypa.io/2.7/get-pip.py
-RUN python get-pip.pyRUN pip install catkin_tools
+RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+RUN python get-pip.py
+RUN pip install catkin_tools
 
 # Initialize the catkin workspace
 WORKDIR /ros_ws/src
@@ -33,8 +38,8 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && catkin build
 # RUN catkin build
 RUN source devel/setup.bash
 
-# Clear apt cache.
-RUN apt clean
+# Clear apt-get cache.
+RUN apt-get clean
 
 # Set the workspace variable
 ENV ROS_WORKSPACE=/ros_ws
@@ -48,3 +53,6 @@ RUN mv /tmp_entrypoint.sh /ros_entrypoint.sh
 # Add a file to help out sourcing the workspaces
 RUN echo "source \"/opt/ros/$ROS_DISTRO/setup.bash\"" >> /source_ws.sh
 RUN echo "source \"/ros_ws/devel/setup.bash\"" >> /source_ws.sh
+
+LABEL org.opencontainers.image.source=https://github.com/ReconCycle/dockers
+
