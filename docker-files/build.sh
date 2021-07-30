@@ -10,6 +10,6 @@ build_and_tag () {
   docker tag $REGISTRY/$PROJECT/$IMAGE:$VERSION_TAG $PROJECT/$IMAGE:$VERSION_TAG
 }
 
-IMAGES=("ros-devel" "gazebo" "reconcycle-simulation")
+IMAGES=("reconcycle-cell-visualization")
 
 for IMAGE in ${IMAGES[@]}; do build_and_tag; done
